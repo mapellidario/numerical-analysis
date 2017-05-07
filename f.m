@@ -1,3 +1,3 @@
-function y=f(x)
+function y = f(x)
     y = 1 ;
 end
