@@ -1,20 +1,22 @@
 % finite elements method for one dimensional problem
 % -(cu')' = f
-% u(0)=0
-% c(1)u'(1)=gamma --> u'(1)=gamma/c(1)
+% u(0)=alpha
+% u(1)=beta
 %
 clear all
 close all
 %
 % Boundary Conditions
-% Neumann non-homogeneus in x=1
-gamma = 0;
+% Dirichlet non-homogeneus in x=0
+alpha = 0 ;
+% Dirichlet non-homogeneus in x=1
+beta = 0 ;
 %
 % c and f are defined elsewhere
 % define mesh
 %
-mesh = 'uniform' ;
-% mesh = 'random' ;
+% mesh = 'uniform' ;
+mesh = 'random' ;
 %
 switch mesh
     case 'uniform'
@@ -23,7 +25,7 @@ switch mesh
         % divide the interval [xmin,xmax] in M-1 intervals (with M points)
         %
         % we want N intervals
-        N = 100;
+        N = 10;
         xu = linspace(0,1,N+1);
         %
         % problem: x_1=0, x_N+1 = 1
@@ -37,7 +39,7 @@ switch mesh
         % in matlab vectors strart from 1, there is no index = 0 in arrays.
     case 'random'
         % random mesh, N random points in (0,1)
-        N = 20 ;
+        N = 200 ;
         %
         x = rand(1,N) ;
         % sort the array, from lower to higher
@@ -86,38 +88,40 @@ end
 % inspect the mesh
 % >> bar(h)
 %
-Kh = zeros(N,N);
+Kh = zeros(N-1,N-1);
 %
 for i=1:N-1
     %
     if i>1
-        % only from second row
+        % this term is not present in the first row
         Kh(i,i-1) = - 1/h(i)*c(m(i)) ;
     end
     %
     Kh(i,i) = + 1/h(i)*c(m(i)) + 1/h(i+1)*c(m(i+1)) ;
     %
-    Kh(i,i+1) = - 1/h(i+1)*c(m(i+1)) ;
+    if i<N-1
+        % this term is not present in the last row. meditate on this!
+        Kh(i,i+1) = - 1/h(i+1)*c(m(i+1)) ;
+    end
 end
-% last line
-% Neumann omogenee
-Kh(N,N-1) = -1/h(N)*c(m(N)) ;
-Kh(N,N) = +1/h(N)*c(m(N)) ;
 %
 % >> spy(Kh)
 %
-% termine noto
+% termine noto, vettore colonna
 %
-fh = zeros(N,1);
+fh = zeros(N-1,1);
 for i=1:N-1
     fh(i) = h(i)/2*f(m(i)) + h(i+1)/2*f(m(i+1)) ;
 end
-% utlimo elemento
-fh(N) = h(N)/2*f(m(N)) + gamma;
+% prima riga per dirichlet non omogeneo in x=0
+fh(1) = fh(1) + alpha/h(1)*c(m(1)) ;
+% ultima riga per dirichlet non omogeneo in x=1
+fh(N-1) = fh(N-1) + beta/h(N)*c(m(N)) ;
+
 %
 % risolvo il sistema lineare
 %
-% uh=zeros(1:N) ;
+% uh=zeros(1:N-1) ;
 % uh vettore colonna
 uh = Kh\fh ;
 % oss per al scelta delle basi, uh[i] è il valore della u(x) in x=x_i
@@ -130,11 +134,52 @@ uh = Kh\fh ;
 
 % solution
 figure(1)
-plot([0 x], [0; uh], 'ok-');
+plot([0 x], [alpha; uh; beta], 'ok-');
+% scale the axis
+% axis([xmin xmax ymin ymax])
+% axis([0 1 -1 4]) ;
+
+
 % debug
 % hold on
-figure(2)
-plot([0 x], [0; fh], 'ok-');
+% figure(2)
+% plot([0 x], [0; fh], 'ok-');
+
+% % compare to exact solution
+% hold on ;
+% %fplot('sin(5*x)+log(1+x)',[0 1],'r');
+% fplot(@(x)sin(5*x)+log(1+x),[0 1],'r');
+%
+% % OSS points of uh are not on u! it is not an interpolating solution!
+% % in can be shown that if h->0, then the distance from the point of uh
+% % and the correponing points of u gets lower.
+% % we want to estimate how quickly the method converges.
+%
+% % there are various methods to estimate the error
+% % Here we consider the maximum error at the nodes
+% errmax=0;
+% for i=1:N
+%     erri = abs(uh(i)-ue(x(i))) ;
+%     if erri>errmax
+%         errmax=erri;
+%     end
+% end
+% % get maximum of the array h
+% hmax = max(h) ;
+% format shorte ;
+% [N hmax errmax]
+
+% OSS: asintotic behaviour of the error
+% uniform mesh
+% N hmax errmax
+%    1.0000e+01   1.0000e-01   2.1264e-02
+%    2.0000e+01   5.0000e-02   5.2103e-03
+%    1.0000e+02   1.0000e-02   2.0708e-04
+% random mesh
+% the error is dominated by the larger h!
+% N hmax errmax
+%    2.1000e+01   1.5985e-01   7.8718e-02
+%    2.0100e+02   3.4237e-02   6.5123e-04
 
 % OSS
 % c=1, f=1 x=0 Dir, x=1 Neu

@@ -6,6 +6,10 @@ syms x real
 expand ((x+3)^3)
 int (x^2, 0, 2)
 
+c = 1+x^2
+diff(c,x)
+int(c,x,0,1)
+
 
 %
 % define a generic parabola:
