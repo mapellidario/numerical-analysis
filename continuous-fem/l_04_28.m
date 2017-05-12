@@ -2,6 +2,8 @@
 clear all
 close all
 %
+% BC
+gamma = 0;
 % c and f are defined elsewhere
 % ------------ DEFINE MESH ---------------
 %
@@ -11,7 +13,7 @@ close all
 %
 % we want N intervals
 %
-N = 10;
+N = 100;
 x = linspace(0,1,N+1);
 %
 % problem: x_1=0, x_N+1 = 1
@@ -68,12 +70,12 @@ Kh(N,N) = 1/h(N)*c(m(N));
 fh = zeros(N,1);
 %
 for i=1:N-1
-  fh(i) = h(i)/2*f(m(i)) + h(i+1)/2*f(m(i+1));
+  fh(i) = h(i)/2*f(m(i)) + h(i+1)/2*f(m(i+1)) ;
 end
 %
 % last element
 %
-fh(N) = h(N)/2*f(m(N));
+fh(N) = h(N)/2*f(m(N)) + gamma;
 %
 %
 % ------------ SOLVE LINEAR SYSTEM ------------
@@ -84,4 +86,11 @@ uh = Kh\fh;
 %
 % plot: 'k-' graphic option
 % be careful when concatenating row and column vectors (use ; if column)
-plot([0 x], [0; uh], 'k-');
+
+% solution
+figure(1)
+plot([0 x], [0; uh], 'ok-');
+% debug
+% hold on
+figure(2)
+plot([0 x], [0; fh], 'ok-');
