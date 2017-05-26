@@ -1,0 +1,11 @@
+column vector
+create/allocate memory
+x = zeros(N,1)
+append term at the beginning
+x = [0 x]
+
+row vector
+create/allocate memory
+x = zeros(1,N)
+append term at the beginning
+x = [0 ; x]
