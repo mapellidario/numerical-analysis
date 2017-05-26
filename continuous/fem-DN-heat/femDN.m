@@ -1,16 +1,20 @@
 % finite elements method for one dimensional problem
-% -(cu')' + au = f
-% u(0)=alpha
-% c(1)u'(1)=gamma --> u'(1)=gamma/c(1)
+% rho u_t -(c u_x)_x = f
+% BC
+% u(t,0) = alpha
+% c(1) u_x(t,1) = gamma
+% dato iniziale
+% u(0,x) = u_0 (x)
 %
 clear all
 close all
 %
 % Boundary Conditions
 % Dirichlet non-homogeneus in x=0 (homogeneus if alpha=0)
-alpha = 1 ;
+alpha = 0 ;
+% should be ok also with alpha!=0
 % Neumann   non-homogeneus in x=1 (homogeneus if gamma=0)
-gamma = -10*sin(5) + 1 ;
+gamma = 0 ;
 
 %
 % c and f are defined elsewhere
@@ -89,6 +93,12 @@ end
 % inspect the mesh
 % >> bar(h)
 %
+
+%
+% Heat modificatons starts from here
+%
+
+
 % -------------- MATRIX KH ------------
 % diffusion matrix
 %
@@ -117,17 +127,17 @@ for i=1:N-1
     %
     if i>1
         % only from second row
-        Mh(i,i-1) = + h(i)/4*a(m(i)) ;
+        Mh(i,i-1) = + h(i)/4*rho(m(i)) ;
     end
     %
-    Mh(i,i) = + h(i)/4*a(m(i)) + h(i+1)/4*a(m(i+1)) ;
+    Mh(i,i) = + h(i)/4*rho(m(i)) + h(i+1)/4*rho(m(i+1)) ;
     %
-    Mh(i,i+1) = h(i+1)/4*a(m(i+1)) ;
+    Mh(i,i+1) = h(i+1)/4*rho(m(i+1)) ;
 end
 % last row
 % Neumann homogenous
-Mh(N,N-1) = h(N)/4*a(m(N)) ;
-Mh(N,N)   = h(N)/4*a(m(N)) ;
+Mh(N,N-1) = h(N)/4*rho(m(N)) ;
+Mh(N,N)   = h(N)/4*rho(m(N)) ;
 %
 % >> whos
 % >> spy(Mh)
@@ -139,72 +149,62 @@ for i=1:N-1
     fh(i) = h(i)/2*f(m(i)) + h(i+1)/2*f(m(i+1)) ;
 end
 % first element for dirichlet in x=0
-fh(1) = fh(1) + alpha/h(1)*c(m(1)) - alpha*h(1)/4*a(m(1));
+fh(1) = fh(1) + alpha/h(1)*c(m(1)) - alpha*h(1)/4*rho(m(1));
 % last element for neumann in x=1
 fh(N) = h(N)/2*f(m(N)) + gamma;
+
 %
-% ------------ SOLVE LINEAR SYSTEM ------------
+% ---- TIME ------
+% From here on we have the ODE system with Kh Mh and fh
 %
-% uh=zeros(1:N) ;
-% uh column vector
-% because of the choice of the basis (Lagrange)
-% the value of uh in a point is the value of the function in that point
-% i.e. uh[i] means uh(x_i)
-uh = (Kh+Mh)\fh ;
+% we chose dt
 %
-% concatenate arrays: (row vector) [0 x] and (column vector) [0; uh]
-% solution
-figure(1)
-plot([0 x], [alpha; uh], 'ok-');
-% debug
-% hold on
-% figure(2)
-% plot([0 x], [0; fh], 'ok-');
+% final time
+% coherent time comparison between different time mesh
+time = 1 ;
 %
-% compare to exact solution
-hold on ;
-fplot(@(x) ue(x),[0 1],'r');
-% scale the axis
-% axis([xmin xmax ymin ymax])
-% axis([0 1 -1 4]) ;
+% we chose kmax
+kmax = 100 ;
 %
-% OSS points of uh are not on u! it is not an interpolating solution!
-% in can be shown that if h->0, then the distance from the point of uh
-% and the correponing points of u gets lower.
-% we want to estimate how quickly the method converges.
+dt = time / kmax ;
 %
-% there are various methods to estimate the error
-% Here we consider the maximum error at the nodes
-errmax=0;
+
+% we now use implicit euler. we save every step
+% uh contains every iteration
+uh = zeros(N,kmax) ;
+% uh(;,k) is the solution at step k.
+% OSS: we do not have the initial condition in uh(:,0) !
+% 
+% define initial condition
+% column vector
+uh0 = zeros(N,1) ;
+
 for i=1:N
-    erri = abs(uh(i)-ue(x(i))) ;
-    if erri>errmax
-        errmax=erri;
+    % interpolating initial condition u0
+    uh0(i) = u0(x(i)) ;
+end
+
+% horrible, but we have to pay that vectors start from 1 in matlab
+% and we want to adhere to conventions used during lectures
+for k=0:kmax-1
+    % uh0 = uh(:,0) -> uh(:,1)
+    if k==0 
+        uh(:,k+1) = (1/dt*Mh + Kh)\(1\dt*Mh*uh0+fh) ;    
+    else
+    % uh0 = uh(:,k) -> uh(:,k+1)
+        % step of implicit Euler
+        uh(:,k+1) = (1/dt*Mh + Kh)\(1\dt*Mh*uh(:,k)+fh) ;
     end
 end
-% get maximum of the array h
-hmax = max(h) ;
-format shorte ;
-display('N hmax errmax')
-display([N hmax errmax])
 
-% OSS
-% asintotic behaviour of the error.
-% It should be of the order (max{h})^2
-% uniform mesh
-% N hmax errmax
-%    1.0000e+01   1.0000e-01   6.0933e-02
-%    5.0000e+01   2.0000e-02   2.4235e-03
-%    1.0000e+02   1.0000e-02   6.0578e-04
-% random mesh
-% the error is dominated by the larger h!
-% N hmax errmax
-%    5.1000e+01   7.6285e-02   2.0441e-02
-%    2.0100e+02   2.7461e-02   1.1410e-03
-%
-% OSS
-% In x=1 the Neumann condition is approximated!
-% the last segment of uh has not the same derivative as the function
-%
+% plot
+figure(1) 
+% disegnamo il dato iniziale
+% x riga, uh0 colonna
+plot ([0 x], [alpha;uh0], 'r' ) 
+% plot the solution in every time step
+hold on
 
-
+for k=1:kmax
+    plot ([0 x], [alpha;uh(:,k)], 'b' ) 
+end

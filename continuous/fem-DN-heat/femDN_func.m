@@ -1,9 +1,12 @@
-% finite elements method for one dimensional problem
+function [hmax, errmax]=femDN_func(N, mesh)
+%
+% Called by femDN_main.m
+% 
 % -(cu')' + au = f
 % u(0)=alpha
 % c(1)u'(1)=gamma --> u'(1)=gamma/c(1)
 %
-clear all
+% clear all
 close all
 %
 % Boundary Conditions
@@ -16,7 +19,7 @@ gamma = -10*sin(5) + 1 ;
 % c and f are defined elsewhere
 % ------------ DEFINE MESH ---------------
 %
-mesh = 'uniform' ;
+% mesh = 'uniform' ;
 % mesh = 'random' ;
 %
 switch mesh
@@ -26,7 +29,7 @@ switch mesh
         % divide the interval [xmin,xmax] in M-1 intervals (with M points)
         %
         % we want N intervals
-        N = 10;
+        % N = 10;
         xu = linspace(0,1,N+1);
         %
         % problem: x_1=0, x_N+1 = 1
@@ -50,7 +53,7 @@ switch mesh
         %
     case 'random'
         % random mesh, N random points in (0,1)
-        N = 50 ;
+        % N = 50 ;
         %
         x = rand(1,N) ;
         % sort the array, from lower to higher
@@ -152,18 +155,9 @@ fh(N) = h(N)/2*f(m(N)) + gamma;
 % i.e. uh[i] means uh(x_i)
 uh = (Kh+Mh)\fh ;
 %
-% concatenate arrays: (row vector) [0 x] and (column vector) [0; uh]
-% solution
-figure(1)
-plot([0 x], [alpha; uh], 'ok-');
-% debug
-% hold on
-% figure(2)
-% plot([0 x], [0; fh], 'ok-');
-%
 % compare to exact solution
-hold on ;
-fplot(@(x) ue(x),[0 1],'r');
+% hold on ;
+% fplot(@(x) ue(x),[0 1],'r');
 % scale the axis
 % axis([xmin xmax ymin ymax])
 % axis([0 1 -1 4]) ;
@@ -184,27 +178,3 @@ for i=1:N
 end
 % get maximum of the array h
 hmax = max(h) ;
-format shorte ;
-display('N hmax errmax')
-display([N hmax errmax])
-
-% OSS
-% asintotic behaviour of the error.
-% It should be of the order (max{h})^2
-% uniform mesh
-% N hmax errmax
-%    1.0000e+01   1.0000e-01   6.0933e-02
-%    5.0000e+01   2.0000e-02   2.4235e-03
-%    1.0000e+02   1.0000e-02   6.0578e-04
-% random mesh
-% the error is dominated by the larger h!
-% N hmax errmax
-%    5.1000e+01   7.6285e-02   2.0441e-02
-%    2.0100e+02   2.7461e-02   1.1410e-03
-%
-% OSS
-% In x=1 the Neumann condition is approximated!
-% the last segment of uh has not the same derivative as the function
-%
-
-

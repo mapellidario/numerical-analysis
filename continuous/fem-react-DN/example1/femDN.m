@@ -17,8 +17,8 @@ gamma = 10*cos(5) + 1 ;
 % c and f are defined elsewhere
 % ------------ DEFINE MESH ---------------
 %
-% mesh = 'uniform' ;
-mesh = 'random' ;
+mesh = 'uniform' ;
+% mesh = 'random' ;
 %
 switch mesh
     case 'uniform'
@@ -27,7 +27,7 @@ switch mesh
         % divide the interval [xmin,xmax] in M-1 intervals (with M points)
         %
         % we want N intervals
-        N = 100;
+        N = 50;
         xu = linspace(0,1,N+1);
         %
         % problem: x_1=0, x_N+1 = 1
@@ -51,7 +51,7 @@ switch mesh
         %
     case 'random'
         % random mesh, N random points in (0,1)
-        N = 200 ;
+        N = 50 ;
         %
         x = rand(1,N) ;
         % sort the array, from lower to higher
@@ -140,7 +140,7 @@ for i=1:N-1
     fh(i) = h(i)/2*f(m(i)) + h(i+1)/2*f(m(i+1)) ;
 end
 % first element for dirichlet in x=0
-% fh(1) = fh(1) + alpha/h(1)*c(m(1)) + "another term if alpha not 0";
+fh(1) = fh(1) + alpha/h(1)*c(m(1)) - alpha*h(1)/4*a(m(1));
 % last element for neumann in x=1
 fh(N) = h(N)/2*f(m(N)) + gamma;
 %
@@ -194,14 +194,14 @@ display([N hmax errmax])
 % It should be of the order (max{h})^2
 % uniform mesh
 % N hmax errmax
-%    1.0000e+01   1.0000e-01   1.7612e-02
-%    5.0000e+01   2.0000e-02   6.8316e-04
-%    1.0000e+02   1.0000e-02   1.7063e-04
+%    1.0000e+01   1.0000e-01   6.0933e-02
+%    5.0000e+01   2.0000e-02   2.4235e-03
+%    1.0000e+02   1.0000e-02   6.0578e-04
 % random mesh
 % the error is dominated by the larger h!
 % N hmax errmax
-%    5.1000e+01   7.0684e-02   4.2319e-03
-%    2.0100e+02   2.8364e-02   3.7603e-04
+%    5.1000e+01   7.6285e-02   2.0441e-02
+%    2.0100e+02   2.7461e-02   1.1410e-03
 %
 % OSS
 % In x=1 the Neumann condition is approximated!

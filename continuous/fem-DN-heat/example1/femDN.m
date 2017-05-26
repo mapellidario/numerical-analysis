@@ -1,7 +1,6 @@
 % finite elements method for one dimensional problem
 % -(cu')' + au = f
 % u(0)=alpha
-%%%%%% only works if alpha = 0
 % c(1)u'(1)=gamma --> u'(1)=gamma/c(1)
 %
 clear all
@@ -9,16 +8,17 @@ close all
 %
 % Boundary Conditions
 % Dirichlet non-homogeneus in x=0 (homogeneus if alpha=0)
-alpha = 1 ; %else it won't work
-% Neumann non-homogeneus in x=1 (homogeneus if gamma=0)
-gamma = 1- 10*sin(5) ;
+alpha = 0 ;
+%%%%%%%%%%%%%%%%%%%%%% funziona solo per alpha = 0
+% Neumann   non-homogeneus in x=1 (homogeneus if gamma=0)
+gamma = 10*cos(5) + 1 ;
 
 %
 % c and f are defined elsewhere
 % ------------ DEFINE MESH ---------------
 %
-% mesh = 'uniform' ;
- mesh = 'random' ;
+mesh = 'uniform' ;
+% mesh = 'random' ;
 %
 switch mesh
     case 'uniform'
@@ -51,7 +51,7 @@ switch mesh
         %
     case 'random'
         % random mesh, N random points in (0,1)
-        N = 200 ;
+        N = 50 ;
         %
         x = rand(1,N) ;
         % sort the array, from lower to higher
@@ -91,6 +91,7 @@ end
 % >> bar(h)
 %
 % -------------- MATRIX KH ------------
+% diffusion matrix
 %
 Kh = zeros(N,N);
 %
@@ -110,30 +111,26 @@ end
 Kh(N,N-1) = -1/h(N)*c(m(N)) ;
 Kh(N,N) = +1/h(N)*c(m(N)) ;
 %
-%
-% -------------- MATRIX MH ------------
+% reaction matirx
 %
 Mh = zeros(N,N);
-%
 for i=1:N-1
     %
     if i>1
         % only from second row
-        Mh(i,i-1) = - h(i)/4*a(m(i)) ;
+        Mh(i,i-1) = + h(i)/4*a(m(i)) ;
     end
     %
-    Mh(i,i) = h(i)/4*a(m(i)) + h(i+1)/4*a(m(i+1)) ;
+    Mh(i,i) = + h(i)/4*a(m(i)) + h(i+1)/4*a(m(i+1)) ;
     %
     Mh(i,i+1) = h(i+1)/4*a(m(i+1)) ;
 end
 % last row
 % Neumann homogenous
 Mh(N,N-1) = h(N)/4*a(m(N)) ;
-Mh(N,N) = h(N)/4*a(m(N)) ;
-%
+Mh(N,N)   = h(N)/4*a(m(N)) ;
 %
 % >> whos
-% >> spy(Kh)
 % >> spy(Mh)
 %
 % --------- CONSTANT TERM --------------
@@ -143,7 +140,7 @@ for i=1:N-1
     fh(i) = h(i)/2*f(m(i)) + h(i+1)/2*f(m(i+1)) ;
 end
 % first element for dirichlet in x=0
-fh(1) = fh(1) + alpha/h(1)*c(m(1)) - alpha*h(1)*a(m(1));
+fh(1) = fh(1) + alpha/h(1)*c(m(1)) - alpha*h(1)/4*a(m(1));
 % last element for neumann in x=1
 fh(N) = h(N)/2*f(m(N)) + gamma;
 %
@@ -197,14 +194,14 @@ display([N hmax errmax])
 % It should be of the order (max{h})^2
 % uniform mesh
 % N hmax errmax
-%    1.0000e+01   1.0000e-01   2.1264e-02
-%    2.0000e+01   5.0000e-02   5.2103e-03
-%    1.0000e+02   1.0000e-02   2.0708e-04
+%    1.0000e+01   1.0000e-01   6.0933e-02
+%    5.0000e+01   2.0000e-02   2.4235e-03
+%    1.0000e+02   1.0000e-02   6.0578e-04
 % random mesh
 % the error is dominated by the larger h!
 % N hmax errmax
-%    2.1000e+01   1.5985e-01   7.8718e-02
-%    2.0100e+02   3.4237e-02   6.5123e-04
+%    5.1000e+01   7.6285e-02   2.0441e-02
+%    2.0100e+02   2.7461e-02   1.1410e-03
 %
 % OSS
 % In x=1 the Neumann condition is approximated!

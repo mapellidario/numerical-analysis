@@ -1,4 +1,5 @@
-function y = c(x)
+function y = c(x);
+%     y=1;
     y = 1+x^2 ;
 
 % if x<0.5

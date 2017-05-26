@@ -9,6 +9,7 @@ close all
 % Boundary Conditions
 % Dirichlet non-homogeneus in x=0 (homogeneus if alpha=0)
 alpha = 1 ;
+%%%%%%%%%%%%%%%%%%%%%% funziona solo per alpha = 0
 % Neumann   non-homogeneus in x=1 (homogeneus if gamma=0)
 gamma = -10*sin(5) + 1 ;
 
@@ -206,5 +207,3 @@ display([N hmax errmax])
 % In x=1 the Neumann condition is approximated!
 % the last segment of uh has not the same derivative as the function
 %
-
-
