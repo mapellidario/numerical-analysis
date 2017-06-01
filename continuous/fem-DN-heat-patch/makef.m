@@ -1,4 +1,4 @@
-function [fh] = makef(N, h, m, alpha, beta, gamma, BCtype)
+function [fh] = makef(N, h, m, BCtype, alpha, beta, gamma)
 
 switch strcat(BCtype)
     case 'DN'

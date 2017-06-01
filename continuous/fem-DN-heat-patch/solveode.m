@@ -1,6 +1,5 @@
-function [uh, uh0, dt] = solvetime(time, kmax, N, x, Kh, Mh, fh)
+function [uh, uh0] = solveode (N, x, dt, kmax, Kh, Mh, fh)
 
-dt = time / kmax ;
 %
 % we now use implicit euler. we save every step
 uh = zeros(N,kmax) ;
