@@ -147,7 +147,7 @@ switch strcat(BCtype)
         end 
         
         % t=0
-        for i=1:N-1
+        for i=1:N-2
             % point 1
             t1 = 0 ;
             x1 = x(i) ;
@@ -243,4 +243,29 @@ switch strcat(BCtype)
         x4 = x3 ;
         u4 = uh0(1) ;
         patch([t1 t2 t3 t4],[x1 x2 x3 x4], [u1 u2 u3 u4], 'w') ;
+
+        % t = 0, x = 1
+        t1 = 0 ;
+        x1 = x(N-1) ;
+        u1 = uh0(N-1) ;
+        % point 2
+        t2 = dt ;
+        x2 = x1 ;
+        u2 = uh(N-1,1) ;
+        % point3
+        t3 = t2 ;
+        x3 = 1 ;
+        u3 = beta ;
+        % point 4
+        t4 = t1 ;
+        x4 = x3 ;
+        u4 = beta;
+        %
+        % uh in scala di colore
+        % patch([t1 t2 t3 t4],[x1 x2 x3 x4], [u1 u2 u3 u4]) ;
+        % la voglio tutta bianca, quindi le varie u le considera come
+        % altezza
+        patch([t1 t2 t3 t4],[x1 x2 x3 x4], [u1 u2 u3 u4], 'w') ;
+
+
 end

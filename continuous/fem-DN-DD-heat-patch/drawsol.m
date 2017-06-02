@@ -16,7 +16,7 @@ switch strcat(BCtype)
         figure(1)
         %
         % initial condition
-        plot([0 x], [alpha; uh; beta], 'ro-');
+        plot([0 x], [alpha; uh0; beta], 'ro-');
         %
         % plot the solution in every time step
         hold on

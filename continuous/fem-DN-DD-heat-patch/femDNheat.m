@@ -19,11 +19,11 @@ close all
 %
 %% Boundary conditions
 %
-% BCtype = 'DN' ;
+BCtype = 'DN' ;
 % u(t,0) = alpha
 % c(1) u_x(t,1) = gamma
 %
-BCtype = 'DD' ;
+% BCtype = 'DD' ;
 % u(t,0) = alpha
 % u(t,1) = beta
 %
@@ -82,7 +82,7 @@ kmax = 20 ;
 dt = time / kmax ;
 %
 % this part is BC independent!
-[uh, uh0] = solveode (N, x, dt, kmax, Kh, Mh, fh) ;
+[uh, uh0] = solveode (N, x, dt, kmax, Kh, Mh, fh, BCtype) ;
 %
 %% Draw Solution
 % plot
