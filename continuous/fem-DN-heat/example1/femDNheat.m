@@ -112,7 +112,7 @@ for i=1:N-1
     %
     if i>1
         % only from second row
-        Kh(i,i-1) = - 1/h(i)*c(m(i)) ;
+        Kh(i,i-1) = + 1/h(i)*c(m(i)) ;
     end
     %
     Kh(i,i) = + 1/h(i)*c(m(i)) + 1/h(i+1)*c(m(i+1)) ;
@@ -131,7 +131,7 @@ for i=1:N-1
     %
     if i>1
         % only from second row
-        Mh(i,i-1) = - h(i)/4*rho(m(i)) ;
+        Mh(i,i-1) = + h(i)/4*rho(m(i)) ;
     end
     %
     Mh(i,i) = + h(i)/4*rho(m(i)) + h(i+1)/4*rho(m(i+1)) ;

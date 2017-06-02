@@ -24,6 +24,7 @@ switch strcat(BCtype)
         % >> spy(Mh)
     case 'DD'
         display('empty')
+        % I still have to compute this!
 end
 
 
