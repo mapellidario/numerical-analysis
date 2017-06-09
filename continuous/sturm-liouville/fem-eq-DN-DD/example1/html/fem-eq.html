@@ -1,0 +1,199 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>finite elements method for one dimensional problem</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-06"><meta name="DC.source" content="fem-eq.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>finite elements method for one dimensional problem</h1><!--introduction--><div><ul><li>equation -(c*u_x)_x + b*u_x + a*u = f</li></ul></div><div><ul><li>BC: you can choose</li></ul></div><p>DN x = 0 : Dirichlet x = 1 : Neumann DD x = 0 : Dirichlet x = 1 : Dirichlet</p><div><ul><li>TDL 1. implement structures 2. x = 1 : Dirichlet 3. x = 0 : Neumann</li></ul></div><pre class="codeoutput error">Error using evalin
+Undefined function or variable 'fem'.
+</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Clean Envirnment</a></li><li><a href="#2">Boundary conditions</a></li><li><a href="#3">Define Mesh</a></li><li><a href="#4">Matrices</a></li><li><a href="#5">Constant Term</a></li><li><a href="#6">solve linear system</a></li><li><a href="#7">Draw Solutionc</a></li></ul></div><h2 id="1">Clean Envirnment</h2><pre class="codeinput">clear <span class="string">all</span>
+<span class="comment">% clear variables</span>
+close <span class="string">all</span>
+<span class="comment">%</span>
+</pre><h2 id="2">Boundary conditions</h2><p>BCtype = 'DN' ; u(t,0) = alpha c(1) u_x(t,1) = gamma</p><pre class="codeinput">BCtype = <span class="string">'DD'</span> ;
+<span class="comment">% u(t,0) = alpha</span>
+<span class="comment">% u(t,1) = beta</span>
+<span class="comment">%</span>
+<span class="comment">% Dirichlet non-homogeneus in x=0 (homogeneus if alpha=0)</span>
+alpha = 0 ;
+<span class="comment">% Neumann   non-homogeneus in x=1 (homogeneus if gamma=0)</span>
+gamma = 100*cos(10) ;
+<span class="comment">% Dirichlet non-homogeneus in x=1 ()</span>
+beta = sin(10) ;
+<span class="comment">%</span>
+</pre><h2 id="3">Define Mesh</h2><pre class="codeinput">N = 100 ;
+meshtype = <span class="string">'uniform'</span> ;
+<span class="comment">% meshtype = 'random' ;</span>
+<span class="comment">%</span>
+[x, h, m, N] = makemesh(meshtype, N) ;
+<span class="comment">%</span>
+</pre><h2 id="4">Matrices</h2><p>This part depends on the BC implicitly, meaning it "only" changes the stricture of the matrices</p><pre class="codeinput"><span class="comment">% diffusion matrix</span>
+<span class="comment">%</span>
+[Kh] = makeK (N, h, m, BCtype) ;
+<span class="comment">%</span>
+<span class="comment">% transport term</span>
+<span class="comment">%</span>
+[Bh] = makeB (N, h, m, BCtype) ;
+<span class="comment">%</span>
+<span class="comment">% reaction matirx</span>
+<span class="comment">%</span>
+[Ah] = makeA (N, h, m, BCtype) ;
+<span class="comment">%</span>
+</pre><h2 id="5">Constant Term</h2><p>this part dependends on BC explicitly, both Dirichlet and Neumann!</p><pre class="codeinput">[fh] = makef (N, h, m, BCtype, alpha, beta, gamma) ;
+<span class="comment">%</span>
+</pre><h2 id="6">solve linear system</h2><pre class="codeinput">uh = (Kh + Bh + Ah) \ fh ;
+</pre><h2 id="7">Draw Solutionc</h2><p>plot</p><p>this depends on Dirichlet BC!</p><pre class="codeinput">drawsol   (uh, x, BCtype, alpha, beta) ;
+
+hold <span class="string">on</span> ;
+fplot(@(x) ue(x),[0 1],<span class="string">'r'</span>);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% finite elements method for one dimensional problem
+%
+% * equation
+% -(c*u_x)_x + b*u_x + a*u = f
+%
+% * BC: you can choose 
+%
+% DN
+% x = 0 : Dirichlet
+% x = 1 : Neumann
+% DD
+% x = 0 : Dirichlet
+% x = 1 : Dirichlet
+%
+% * TDL
+% 1. implement structures
+% 2. x = 1 : Dirichlet
+% 3. x = 0 : Neumann
+
+%% Clean Envirnment
+%
+clear all
+% clear variables
+close all
+%
+%% Boundary conditions
+%
+% BCtype = 'DN' ;
+% u(t,0) = alpha
+% c(1) u_x(t,1) = gamma
+% 
+BCtype = 'DD' ;
+% u(t,0) = alpha
+% u(t,1) = beta
+%
+% Dirichlet non-homogeneus in x=0 (homogeneus if alpha=0)
+alpha = 0 ;
+% Neumann   non-homogeneus in x=1 (homogeneus if gamma=0)
+gamma = 100*cos(10) ;
+% Dirichlet non-homogeneus in x=1 ()
+beta = sin(10) ;
+%
+%% Define Mesh
+%
+N = 100 ;
+meshtype = 'uniform' ;
+% meshtype = 'random' ;
+%
+[x, h, m, N] = makemesh(meshtype, N) ;
+%
+%% Matrices
+%
+% This part depends on the BC implicitly, meaning it "only" changes the
+% stricture of the matrices
+
+% diffusion matrix
+%
+[Kh] = makeK (N, h, m, BCtype) ;
+%
+% transport term
+%
+[Bh] = makeB (N, h, m, BCtype) ;
+%
+% reaction matirx
+%
+[Ah] = makeA (N, h, m, BCtype) ;
+%
+%% Constant Term
+%
+% this part dependends on BC explicitly, both Dirichlet and Neumann!
+[fh] = makef (N, h, m, BCtype, alpha, beta, gamma) ;
+%
+
+%% solve linear system
+
+uh = (Kh + Bh + Ah) \ fh ;
+
+%% Draw Solutionc
+% plot
+%
+% this depends on Dirichlet BC!
+drawsol   (uh, x, BCtype, alpha, beta) ;
+
+hold on ;
+fplot(@(x) ue(x),[0 1],'r');
+##### SOURCE END #####
+--></body></html>
