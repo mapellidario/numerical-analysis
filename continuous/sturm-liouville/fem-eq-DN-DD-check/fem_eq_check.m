@@ -42,7 +42,7 @@
 %
 % * hypotesis check
 %
-% fem works if $ -b_x/2+a > 0 $, and atthe end of the program we check
+% fem works if $ -b_x/2+a > 0 $, and at the end of the program we check
 % if this condition holds. If it does not, we can not trust the fem
 % to properly work!
 
@@ -163,7 +163,7 @@ saveas(fig, strcat('fem_eq-',BCtype,'.png')) ;
 %% hypothesis check
 
 for i=1:N
-    if -subs(diff(bs,xs),xs,x(i))+subs(as,xs,x(i)) <=0
+    if -subs(diff(bs,xs),xs,x(i))/2+subs(as,xs,x(i)) <=0
         sprintf('achtung @ i: %d', i)
     end
 end
