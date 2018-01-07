@@ -12,15 +12,21 @@ clear all
 close all
 %
 %% Boundary conditions
-BCtype = 'NN' ;
+% BCtype = 'NN' ;
 % c(0) u_x(t,0) = delta
 % c(1) u_x(t,1) = gamma
+%
+BCtype = 'ND' ;
+% c(0) u_x(t,0) = delta
+% u(t,1) = beta
 %
 % Boundary Conditions
 % Neumann   non-homogeneus in x=0 (homogeneus if delta=0)
 delta = 0 ;
 % Neumann   non-homogeneus in x=1 (homogeneus if gamma=0)
 gamma = -1 ;
+% Dirichlet non-homogeneus in x=1 (homogeneous if beta=0)
+beta = -0.1 ;
 %
 %% initial condition
 % initial condition
@@ -50,7 +56,7 @@ meshtype = 'uniform' ;
 %% Constant Term
 %
 % this part dependends on BC explicitly, both Dirichlet and Neumann!
-[fh] = makef (N, h, m, BCtype, delta, gamma) ;
+[fh] = makef (N, h, m, BCtype, delta, gamma, beta) ;
 %
 %
 %% Solving ODE
@@ -75,7 +81,7 @@ dt = time / kmax ;
 %
 % this depends on Dirichlet BC!
 
-figsol = drawsol   (uh, uh0, x,        kmax, BCtype) ;
+figsol = drawsol   (uh, uh0, x, kmax, BCtype, beta) ;
 title({strcat('\rho(x)*u_t(t,x) - (c(x)*u(t,x)_x)_x = f(x)'),'Initial condition: u(0,x)=u_0(x)',strcat('Boundary conditions: ',BCtype)}) ;
 saveas(figsol, strcat('fem-euler-heat-sol-',BCtype,'.png')) ;
 

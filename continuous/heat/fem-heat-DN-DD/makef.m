@@ -1,7 +1,7 @@
 function [fh] = makef(N, h, m, BCtype, alpha, beta, gamma)
 
 % notice that the fh vector has different sizes acording to the BC!
-% this is why, even though for i=1:N-1 the vector is the same, it is 
+% this is why, even though for i=1:N-1 the vector is the same, it is
 % inside the switch nonetheless.
 
 switch strcat(BCtype)
@@ -16,7 +16,7 @@ switch strcat(BCtype)
         % last element for neumann non homogenous in x=1
         fh(N) = h(N)/2*f(m(N)) + gamma ;
     case 'DD'
-        % 
+        %
         fh = zeros(N-1,1);
         % this part is common
         for i=1:N-1
@@ -25,7 +25,7 @@ switch strcat(BCtype)
         % first element for dirichlet non homogenous in x=0
         % considered K and M matrix effect
         fh(1) = fh(1) + alpha/h(1)*c(m(1)) - alpha*h(1)/4*rho(m(1)) ;
-        % last element for neumann non homogenous in x=1
+        % last element for dirichlet non homogenous in x=1
         fh(N-1) = fh(N-1) + beta/h(N)*c(m(N)) - beta*h(N)/4*rho(m(N)) ;
 end
 

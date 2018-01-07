@@ -20,14 +20,14 @@ BCtype = 'DN' ;
 % BCtype = 'DD' ;
 % u(t,0) = alpha
 % u(t,1) = beta
+
 %
 % Boundary Conditions
-% Dirichlet non-homogeneus in x=0 (homogeneus if alpha=0)
+% Dirichlet non-homogeneus in x=0 (homogeneous if alpha=0)
 alpha = 0.1 ;
-% should be ok also with alpha!=0
-% Neumann   non-homogeneus in x=1 (homogeneus if gamma=0)
+% Neumann   non-homogeneus in x=1 (homogeneous if gamma=0)
 gamma = -1 ;
-% Dirichlet non-homogeneus in x=1 ()
+% Dirichlet non-homogeneus in x=1 (homogeneous if beta=0)
 beta = 0.0 ;
 %
 %% initial condition
@@ -45,7 +45,7 @@ meshtype = 'uniform' ;
 %% Matrices
 %
 % This part depends on the BC implicitly, meaning it "only" changes the
-% stricture of the matrices
+% structure of the matrices
 %
 % diffusion matrix
 %
@@ -83,7 +83,7 @@ dt = time / kmax ;
 %
 % this depends on Dirichlet BC!
 
-figsol = drawsol   (uh, uh0, x,        kmax, BCtype, alpha, beta) ;
+figsol = drawsol   (uh, uh0, x, kmax, BCtype, alpha, beta) ;
 title({strcat('\rho(x)*u_t(t,x) - (c(x)*u(t,x)_x)_x = f(x)'),'Initial condition: u(0,x)=u_0(x)',strcat('Boundary conditions: ',BCtype)}) ;
 saveas(figsol, strcat('fem-euler-heat-sol-',BCtype,'.png')) ;
 
@@ -91,5 +91,3 @@ figpatch = drawpatch (uh, uh0, x, N, dt, kmax, BCtype, alpha, beta) ;
 view(30,45);
 title({strcat('\rho(x)*u_t(t,x) - (c(x)*u(t,x)_x)_x = f(x)'),'Initial condition: u(0,x)=u_0(x)',strcat('Boundary conditions: ',BCtype)}) ;
 saveas(figpatch, strcat('fem-euler-heat-patch-',BCtype,'.png')) ;
-
-

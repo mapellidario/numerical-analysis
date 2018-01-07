@@ -23,7 +23,22 @@ switch strcat(BCtype)
         % >> whos
         % >> spy(Mh)
     case 'ND'
-        disp('empty')
+        Mh = sparse(N,N);
+        %
+        for i=2:N
+          %
+          Mh(i,i-1) = + h(i)/4*rho(m(i)) ;
+          %
+          Mh(i,i) = + h(i)/4*rho(m(i)) + h(i+1)/4*rho(m(i+1)) ;
+          %
+          if i<N
+            Mh(i,i+1) = h(i+1)/4*rho(m(i+1)) ;
+          end
+        end
+        % first row
+        % Neumann
+        Mh(1,1)   = h(2)/4*rho(m(2)) ;
+        Mh(1,2)   = h(2)/4*rho(m(2)) ;
 end
 
 

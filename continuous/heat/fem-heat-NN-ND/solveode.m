@@ -16,7 +16,19 @@ switch strcat(BCtype)
             % uh0(i) = rand() ;
         end
     case 'ND'
-        disp('empty')
+        % we now use implicit euler. we save every step
+        uh = zeros(N,kmax) ;
+        % uh(;,k) is the solution at step k.
+        %
+        % OSS: we do not have the initial condition in uh(:,0) !
+        % we have to define the initial condition in a separate column vector
+        
+        uh0 = zeros(N,1) ;
+        for i=1:N
+            % interpolating initial condition u0
+            uh0(i) = u0(x(i)) ;
+            % uh0(i) = rand() ;
+        end
 end
 
 

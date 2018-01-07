@@ -9,6 +9,8 @@ switch strcat(BCtype)
         % plot the solution in every time step
         hold on
         for k=1:kmax
+            % uh(:,k) is the kth column, append alpha at the beginning
+            %plot (x,y,options)
             plot ([0 x], [alpha; uh(:,k)], 'b' )
         end
     case 'DD'
