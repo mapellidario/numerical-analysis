@@ -149,16 +149,16 @@ We consider three BC combinations:
 
 The last case is particularly interesting since it models the case in which the flux of energy is fixed at both points of the border. If the flux is set to be zero and the constant term `f` is greater then 0, then it means that energy is constantly pumped into the system, but it can not flow out throught the boundaries, and hence the temperature grows indefenitly.
 
-![heat nn](continuous/heat/fem-heat-NN/example1/fem-euler-heat-sol-NN.png)
+![heat nn](continuous/heat/fem-heat-NN-ND/example1/fem-euler-heat-sol-NN.png)
 
 
 Similarly, if the flow of energy out of the boundaries is too high compared to the constant term, the temperature decreases indefenitely.
 
-![heat2 nn](continuous/heat/fem-heat-NN/example2/fem-euler-heat-sol-NN.png)
+![heat2 nn](continuous/heat/fem-heat-NN-ND/example2/fem-euler-heat-sol-NN.png)
 
 
 It is also possible to find a combination of BC and parameters such that the temperature converges to a stable equilibrium solution.
 
-![heat3 nn](continuous/heat/fem-heat-NN/example3/fem-euler-heat-sol-NN.png)
+![heat3 nn](continuous/heat/fem-heat-NN-ND/example3/fem-euler-heat-sol-NN.png)
 
 This behaviour is justified since the relative equilibrium problem, which has Neumann-Neumann BCs, is not guaranteed to have a unique solution.
